@@ -80,25 +80,63 @@ flowchart TB
     Auth & Proj & Work & Prof <-->|"sqlsrv_query()"| Tables
 ```
 
-### Lifecycle Flow
+### Data Flow Diagrams (DFD)
+
+Data Flow Diagrams illustrate how information routes through the system's processes and databases. This is vital for understanding system boundaries and data persistence.
+
+#### DFD Level 0 (Context Diagram)
+The Context Diagram treats the entire platform as a single process, showing the primary inputs and outputs from our external entities.
 
 ```mermaid
-sequenceDiagram
-    participant Client
-    participant Platform
-    participant Developer
+flowchart LR
+    Client[Client]
+    Dev[Developer]
+    Sys((0.0 ProjectEngine Platform))
 
-    Client->>Platform: Register as Client
-    Developer->>Platform: Register as Developer (skills, rate, level)
-    Client->>Platform: Post Project (title, budget, required level)
-    Developer->>Platform: Browse & Apply to Project
-    Client->>Platform: Review Application → Accept
-    Platform->>Platform: Set project = Active, dev = booked
-    Client->>Platform: Enter Workspace
-    Developer->>Platform: Enter Workspace
-    Client-->>Developer: Chat + Kanban collaboration
-    Developer->>Platform: Move tasks → Done
-    Client->>Platform: Mark project Completed
+    Client -- "Account Info, Project Details, Messages" --> Sys
+    Sys -- "Dashboard Views, Dev Profiles, Workspace State" --> Client
+
+    Dev -- "Profile Data, Applications, Task Updates" --> Sys
+    Sys -- "Job Listings, Hire Approvals, Workspace State" --> Dev
+```
+
+#### DFD Level 1 (Process Decomposition)
+Level 1 breaks the main system down into its core subsystems (Identity, Projects, Workspace) and shows how they interact with specific database tables.
+
+```mermaid
+flowchart TB
+    %% External Entities
+    C[Client]
+    D[Developer]
+
+    %% Processes
+    P1((1.0 Manage Identity))
+    P2((2.0 Manage Projects))
+    P3((3.0 Workspace Sync))
+
+    %% Data Stores
+    D1[(D1: Auth & Profiles)]
+    D2[(D2: Projects & Apps)]
+    D3[(D3: Tasks & Chat)]
+
+    %% Entity to Process Flows
+    C -- "Login / Profile Updates" --> P1
+    C -- "Post Project / Review Apps" --> P2
+    C -- "Read Tasks / Send Chat" --> P3
+
+    D -- "Login / Skill Updates" --> P1
+    D -- "Apply to Project" --> P2
+    D -- "Move Tasks / Send Chat" --> P3
+
+    %% Process to Data Store Flows
+    P1 <--> |"Verify / Save Users"| D1
+    P2 <--> |"Save / Read Projects"| D2
+    P3 <--> |"Save / Read Board"| D3
+
+    %% Cross-Process Communication
+    P1 -. "Auth Token" .-> P2
+    P1 -. "Auth Token" .-> P3
+    P2 -. "Active Project Auth" .-> P3
 ```
 
 ---
