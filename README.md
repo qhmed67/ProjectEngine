@@ -60,31 +60,24 @@ The platform follows a classic **3-tier architecture**: a static HTML/CSS/JS fro
 ```mermaid
 flowchart TB
     subgraph Frontend ["Frontend (Browser)"]
-        A["index.html / dashboard.html / workspace.html"]
-        B["script.js — SPA-like routing & fetch API calls"]
-        C["style.css — CSS custom properties & grid system"]
+        UI["HTML Views (dashboard, workspace, etc)"]
+        JS["script.js (DOM Logic & State)"]
+        UI <-->|"User Events / DOM Updates"| JS
     end
 
     subgraph API ["API Layer (PHP)"]
-        D["register.php / login.php / logout.php"]
-        E["post_project.php / get_projects.php"]
-        F["apply_project.php / hire_developer.php"]
-        G["review_application.php / respond_hire.php"]
-        H["get_workspace.php / add_task.php / move_task.php"]
-        I["send_message.php / get_messages.php"]
-        J["update_profile.php / delete_account.php"]
+        Auth["Auth APIs (login, register)"]
+        Proj["Project APIs (post, apply, hire)"]
+        Work["Workspace APIs (tasks, chat)"]
+        Prof["Profile APIs (get, update)"]
     end
 
     subgraph DB ["Database (SQL Server)"]
-        K["Users / Clients / Developers"]
-        L["Skills / Developer_Skills"]
-        M["Projects / Project_Applications"]
-        N["Workspace_Messages / Workspace_Tasks"]
+        Tables[("9 Normalized Tables")]
     end
 
-    A -->|"fetch()"| B
-    B -->|"POST/GET"| D & E & F & G & H & I & J
-    D & E & F & G & H & I & J -->|"sqlsrv_query()"| K & L & M & N
+    JS <-->|"fetch() JSON"| Auth & Proj & Work & Prof
+    Auth & Proj & Work & Prof <-->|"sqlsrv_query()"| Tables
 ```
 
 ### Lifecycle Flow
