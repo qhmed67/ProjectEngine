@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Project | ProjectEngine</title>
+    <meta name="description" content="Post a new web, android or AI project.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span><div class="logo-dot"></div></div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="register.html" class="btn btn-outline btn-sm">Sign In</a>
+            <a href="post-project.html" class="btn btn-primary btn-sm">Post Project</a>
+        </div>
+    </nav>
+
+    <main class="main-content container mt-8">
+        <div class="form-container card" style="margin-left: auto; margin-right: auto; max-width: 800px;">
+            <div class="text-center mb-8">
+                <h2>Post a <span class="gradient-text">New Project</span></h2>
+                <p class="text-secondary">Detail your vision and find the perfect developer for the job.</p>
+            </div>
+            
+            <form action="dashboard.html">
+                <div class="form-group">
+                    <label class="form-label">Project Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="e.g. E-Commerce Mobile App" required>
+                </div>
+                
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-control">
+                            <option>Web Development</option>
+                            <option>Android / iOS App</option>
+                            <option>AI / Machine Learning</option>
+                            <option>UI/UX Design</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Required Level</label>
+                        <select name="required_level" class="form-control">
+                            <option value="Trainee">Trainee (Student) - MVP / Prototype</option>
+                            <option value="Junior">Junior - Standard Application</option>
+                            <option value="Mid">Mid-Level - Complex & Scalable</option>
+                            <option value="Senior">Senior - Enterprise & Architecture</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Project Description</label>
+                    <textarea name="description" class="form-control" placeholder="Describe the core features, tech stack preferences, and main goals of the application..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Estimated Budget</label>
+                    <select name="budget_tier" class="form-control">
+                        <option value="Under $500">Under $500 (Trainee Recommended)</option>
+                        <option value="$500 - $2,000">$500 - $2,000</option>
+                        <option value="$2,000 - $5,000">$2,000 - $5,000</option>
+                        <option value="$5,000+">$5,000+</option>
+                    </select>
+                </div>
+                
+                <div class="form-group mt-8">
+                    <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem;">Launch Project into Network</button>
+                    <a href="index.html" class="btn btn-outline" style="margin-left: 1rem;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script src="script.js?v=1.1"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developers | ProjectEngine</title>
+    <meta name="description" content="Find the perfect developer for your project.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span>
+            <div class="logo-dot"></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item active">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="register.html" class="btn btn-outline btn-sm">Sign In</a>
+            <a href="post-project.html" class="btn btn-primary btn-sm">Post Project</a>
+        </div>
+    </nav>
+
+    <main class="main-content container mt-8" style="min-width: 900px;">
+        <div class="text-center mb-8">
+            <h2>Our <span class="gradient-text">Developers</span></h2>
+            <p class="text-secondary">Discover elite talent directly matching your required stack.</p>
+        </div>
+
+        <!-- CSS Only Filtering Logic -->
+        <input type="radio" name="filter" id="filter-all" checked>
+        <input type="radio" name="filter" id="filter-trainee">
+        <input type="radio" name="filter" id="filter-junior">
+        <input type="radio" name="filter" id="filter-mid">
+        <input type="radio" name="filter" id="filter-senior">
+
+        <div class="filter-container">
+            <label for="filter-all" class="filter-btn">All Developers</label>
+            <label for="filter-trainee" class="filter-btn">Trainee</label>
+            <label for="filter-junior" class="filter-btn">Junior</label>
+            <label for="filter-mid" class="filter-btn">Mid-Level</label>
+            <label for="filter-senior" class="filter-btn">Senior</label>
+        </div>
+
+        <div class="grid grid-3" id="dev-grid">
+            <div style="text-align: center; grid-column: 1 / -1; padding: 2rem;">Loading developers...</div>
+        </div>
+    </main>
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>

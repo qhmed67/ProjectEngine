@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Profile | ProjectEngine</title>
+    <meta name="description" content="View developer profile and collaboration options.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span><div class="logo-dot"></div></div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="register.html" class="btn btn-outline btn-sm">Sign In</a>
+            <a href="post-project.html" class="btn btn-primary btn-sm">Post Project</a>
+        </div>
+    </nav>
+
+    <main class="main-content container mt-8">
+        <div class="card profile-hero mb-8" style="display: flex; gap: 3rem; align-items: center; padding: 4rem;">
+            <div class="dev-avatar" id="prof-avatar" style="width: 150px; height: 150px; font-size: 3rem; flex-shrink: 0;">--</div>
+            <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h1 id="prof-name" style="margin-bottom: 0;">Loading...</h1>
+                    <span class="level-badge badge-mid" id="prof-level">Loading...</span>
+                </div>
+                <h3 id="prof-title" style="color: var(--primary); margin-bottom: 1rem; font-weight: 500;"></h3>
+                <p class="text-secondary" style="font-size: 1.1rem; max-width: 800px;" id="prof-desc">Developer details loading...</p>
+                
+                <div id="prof-links" style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;"></div>
+                
+                <div class="skills-container mt-4" id="prof-skills">
+                    <span class="skill-tag">Loading...</span>
+                </div>
+                <div class="mt-8" id="hire-action-container" style="display: none;">
+                    <select id="hire-project-select" class="form-control" style="width: 300px; display: inline-block; margin-right: 1rem;">
+                        <option value="">Select Project</option>
+                    </select>
+                    <button class="btn btn-primary" id="btn-hire">Hire Developer</button>
+                    <span id="hire-status" style="margin-left: 1rem; font-weight: 600;"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h3 id="dyn-about-title" style="font-size: 1.8rem; margin-bottom: 1.5rem;">About Developer</h3>
+                <div id="dyn-bio" class="text-secondary" style="font-size: 1.1rem; line-height: 1.8;">Details loading...</div>
+            </div>
+            
+            <div class="card">
+                <h3>Professional Experience</h3>
+                <div id="dyn-experience-widget" style="margin-top: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="width: 60px; height: 60px; background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        </div>
+                        <div>
+                            <h4 id="dyn-exp-years">Loading...</h4>
+                            <p class="text-secondary small">Years in Industry</p>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color);">
+                        <p id="dyn-exp-desc" style="margin: 0; font-size: 0.95rem;"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js?v=1.1"></script>
+</body>
+</html>

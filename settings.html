@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | ProjectEngine</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .danger-zone {
+            border: 1px solid #ff4d4d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            background: rgba(255, 77, 77, 0.05);
+        }
+
+        .danger-zone h3 {
+            color: #ff4d4d;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span>
+            <div class="logo-dot"></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="dev-avatar"
+                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); font-size: 1rem; cursor: pointer;">
+                U</div>
+        </div>
+    </nav>
+
+    <main class="main-content settings-container mt-8">
+        <h2 class="mb-4" style="margin-top: 17%;">Profile <span class="gradient-text">Settings</span></h2>
+
+        <div class="card">
+            <form id="update-profile-form">
+                <div class="form-group mb-4">
+                    <label class="form-label">Email Address (Cannot be changed)</label>
+                    <input type="email" id="set-email" class="form-control" disabled
+                        style="background: rgba(0,0,0,0.05);">
+                </div>
+
+                <!-- Client Fields -->
+                <div id="settings-client-fields" style="display: none;">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" name="company_name" id="set-company" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Contact Number</label>
+                        <input type="text" name="contact_number" id="set-contact" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Developer Fields -->
+                <div id="settings-dev-fields" style="display: none;">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" id="set-fullname" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Level</label>
+                        <select name="level" id="set-level" class="form-control">
+                            <option value="Trainee">Trainee</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Mid">Mid-Level</option>
+                            <option value="Senior">Senior</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Job Title</label>
+                        <input type="text" name="job_title" id="set-jobtitle" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Hourly Rate ($)</label>
+                        <input type="number" name="hourly_rate" id="set-rate" class="form-control" min="0">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Core Skills (comma separated)</label>
+                        <input type="text" name="skills" id="set-skills" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">GitHub URL</label>
+                        <input type="url" name="github_url" id="set-github" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">LinkedIn URL</label>
+                        <input type="url" name="linkedin_url" id="set-linkedin" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">Portfolio URL</label>
+                        <input type="url" name="portfolio_url" id="set-portfolio" class="form-control">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label">About Me (Bio)</label>
+                        <textarea name="bio" id="set-bio" class="form-control" style="min-height: 100px;"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="danger-zone">
+            <h3 class="mb-2">Delete Account</h3>
+            <p class="text-secondary mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+            <form id="delete-account-form">
+                <div class="form-group mb-4">
+                    <label class="form-label" style="color: #ff4d4d;">Confirm Password to Delete</label>
+                    <input type="password" name="password" class="form-control" required style="border-color: #ff4d4d;">
+                </div>
+                <button type="submit" class="btn"
+                    style="background: #ff4d4d; color: white; border: none; width: 100%;">Permanently Delete My
+                    Account</button>
+            </form>
+        </div>
+    </main>
+    <script src="script.js?v=1.2"></script>
+</body>
+
+</html>

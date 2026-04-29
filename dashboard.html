@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ProjectEngine</title>
+    <meta name="description" content="View your active and pending projects.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span>
+            <div class="logo-dot"></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item active">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="dev-avatar"
+                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); font-size: 1rem; cursor: pointer;">
+                CL</div>
+        </div>
+    </nav>
+
+    <main class="main-content container mt-8">
+        <div class="dashboard-layout">
+            <aside class="sidebar card">
+                <div class="text-center mb-4">
+                    <div class="dev-avatar" style="margin: 0 auto 1rem; width: 80px; height: 80px;">CL</div>
+                    <h3>Chris Client</h3>
+                    <p class="text-secondary small">Product Owner</p>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-btn active" data-tab="projects-tab">My Projects</a></li>
+                </ul>
+                <div class="mt-4">
+                    <a href="post-project.html" class="btn btn-primary btn-block mb-2">New Project</a>
+                    <a href="settings.html" class="btn btn-outline btn-block">Profile Settings</a>
+                </div>
+            </aside>
+
+            <div class="dashboard-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="margin-top: 0;">Active <span class="gradient-text">Projects</span></h2>
+                </div>
+
+                <div id="projects-tab" class="dashboard-tab active">
+                    <div class="card mb-4" style="padding: 0; min-height: 300px; display: flex; flex-direction: column;"
+                        id="project-list-container">
+                        <div style="padding: 2rem; text-align: center;">
+                            <span class="loading-spinner"></span> Loading your projects...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js?v=1.1"></script>
+</body>
+
+</html>

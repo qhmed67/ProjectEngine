@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ProjectEngine</title>
+    <meta name="description" content="Register as a client or developer on ProjectEngine.">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .register-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - var(--nav-height));
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Project<span>Engine</span><div class="logo-dot"></div></div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-item">Home</a></li>
+            <li><a href="developers.html" class="nav-item">Developers</a></li>
+            <li><a href="dashboard.html" class="nav-item">Dashboard</a></li>
+            <li><a href="workspace.html" class="nav-item">Workspace</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+            <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+        </div>
+    </nav>
+
+    <main class="main-content register-container">
+        <div class="form-container card" style="width: 100%;">
+            <h2 class="text-center mb-4">Create your <span class="gradient-text">Account</span></h2>
+            <form action="dashboard.html">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <div class="form-group mt-8">
+                    <label class="form-label mb-2">I want to join as a:</label>
+                    <div class="role-tabs">
+                        <input type="radio" name="role" id="role-client" value="Client" checked>
+                        <label for="role-client">Client</label>
+                        
+                        <input type="radio" name="role" id="role-dev" value="Developer">
+                        <label for="role-dev">Developer</label>
+                    </div>
+                    
+                    <div class="client-fields mt-4">
+                        <div class="form-group">
+                            <label class="form-label">Company Name</label>
+                            <input type="text" name="company_name" class="form-control" placeholder="e.g. Acme Corp">
+                        </div>
+                    </div>
+                    <div class="dev-fields mt-4" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Select Your Level</label>
+                            <select name="level" class="form-control">
+                                <option value="Trainee">Trainee (Student)</option>
+                                <option value="Junior">Junior</option>
+                                <option value="Mid">Mid-Level</option>
+                                <option value="Senior">Senior</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Core Skills</label>
+                            <input type="text" name="skills" class="form-control" placeholder="e.g. React, Node.js, Python (comma separated)">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" name="job_title" class="form-control" placeholder="e.g. Full Stack Developer">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Hourly Rate ($)</label>
+                            <input type="number" name="hourly_rate" class="form-control" placeholder="e.g. 45" min="0" step="1">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Portfolio URL</label>
+                            <input type="url" name="portfolio_url" class="form-control" placeholder="https://myportfolio.com">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">GitHub URL</label>
+                            <input type="url" name="github_url" class="form-control" placeholder="https://github.com/username">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">LinkedIn URL</label>
+                            <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/username">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">About Me (Bio)</label>
+                            <textarea name="bio" class="form-control" placeholder="Tell us about yourself..." style="min-height: 100px; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mt-8">
+                    <button type="submit" class="btn btn-primary btn-block">Complete Registration</button>
+                </div>
+                <div class="text-center mt-4">
+                    <p class="text-secondary">Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 600;">Sign in here</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script src="script.js?v=1.1"></script>
+</body>
+</html>
