@@ -1,3 +1,4 @@
 [30-Apr-2026 13:36:09 Europe/Berlin] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\ProjectEngine - Copy - Copy\api\register.php on line 90
 [30-Apr-2026 13:41:08 Europe/Berlin] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\ProjectEngine - Copy - Copy\api\register.php on line 90
 [30-Apr-2026 14:18:49 Europe/Berlin] Registration SQL Error (Users): [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Violation of UNIQUE KEY constraint 'UQ_Users_Email'. Cannot insert duplicate key in object 'dbo.Users'. The duplicate key value is (ibrahim@gmail.com).
+[30-Apr-2026 14:37:02 Europe/Berlin] Registration SQL Error (Users): [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Violation of UNIQUE KEY constraint 'UQ_Users_Email'. Cannot insert duplicate key in object 'dbo.Users'. The duplicate key value is (Osama@gmail.com).

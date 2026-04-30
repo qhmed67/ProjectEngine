@@ -100,8 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
     forms.forEach(form => {
         const isRegistration = form.closest('.register-container');
         const isPostProject = window.location.href.includes('post-project');
+        const isLoginForm = form.id === 'login-form';
+        const isSettingsForm = form.id === 'update-profile-form' || form.id === 'delete-account-form';
 
-        // Skip forms that have their own dedicated handlers
+        // Skip forms that have their own dedicated handlers to avoid double submission
+        if (isLoginForm || isSettingsForm) return;
         if (!isRegistration && !isPostProject) return;
 
         form.addEventListener('submit', async (e) => {
@@ -139,19 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         localStorage.setItem('isLoggedIn', 'true');
                         localStorage.setItem('userRole', formData.get('role'));
                     }
-                    showNotification(data.message || 'Success!');
+                    showNotification(data.message || 'Success!', 'success');
                     setTimeout(() => {
                         window.location.href = data.redirect || 'dashboard.html';
                     }, 1000);
                 } else {
                     const errorMsg = data.errors ? data.errors.join(' • ') : (data.detail || data.error || 'Something went wrong.');
-                    showNotification('⚠ ' + errorMsg);
+                    showNotification('⚠ ' + errorMsg, 'error');
                     submitBtn.innerHTML = originalText;
                     submitBtn.style.opacity = '1';
                     submitBtn.style.pointerEvents = 'auto';
                 }
             } catch (err) {
-                showNotification('⚠ ' + err.message);
+                showNotification('⚠ Connection Error: ' + err.message, 'error');
                 submitBtn.innerHTML = originalText;
                 submitBtn.style.opacity = '1';
                 submitBtn.style.pointerEvents = 'auto';
@@ -189,6 +192,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.textContent : 'Sign In';
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Authenticating...';
+            }
+
             const formData = new FormData(this);
             fetch('api/login.php', { method: 'POST', body: formData })
                 .then(r => r.json())
@@ -197,29 +209,56 @@ document.addEventListener('DOMContentLoaded', () => {
                         localStorage.setItem('isLoggedIn', 'true');
                         localStorage.setItem('userRole', res.role);
                         localStorage.setItem('currentUser', res.name);
-                        window.location.href = 'dashboard.html';
+                        showNotification('Welcome back, ' + res.name + '!', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 800);
                     } else {
-                        showNotification(res.error || 'Login failed');
+                        showNotification('⚠ ' + (res.error || 'Login failed'), 'error');
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalText;
+                        }
                     }
-                }).catch(() => showNotification('Connection error'));
+                })
+                .catch(() => {
+                    showNotification('⚠ Connection error', 'error');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                });
         });
     }
 
     // GLOBAL NOTIFICATION SYSTEM
-    function showNotification(message) {
+    function showNotification(message, type = 'success') {
+        // Remove any existing notifications to avoid stacking
+        const existing = document.querySelectorAll('.global-notification');
+        existing.forEach(n => n.remove());
+
         const notify = document.createElement('div');
-        notify.className = 'card global-notification';
+        notify.className = `card global-notification ${type}`;
+        
+        const bgColor = type === 'error' ? 'var(--danger, #ef4444)' : 'var(--success, #10b981)';
+        const borderColor = type === 'error' ? '#fca5a5' : '#6ee7b7';
+
         notify.style.cssText = `
             position: fixed;
-            bottom: 2rem;
+            bottom: 2.5rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            padding: 1rem 2rem;
-            background: var(--primary);
+            padding: 1rem 2.5rem;
+            background: ${bgColor};
             color: white;
             z-index: 9999;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid var(--accent);
+            border: 2px solid ${borderColor};
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-weight: 600;
+            text-align: center;
+            min-width: 300px;
         `;
         notify.textContent = message;
         document.body.appendChild(notify);
@@ -233,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             notify.style.transform = 'translateX(-50%) translateY(100px)';
             setTimeout(() => notify.remove(), 400);
-        }, 3000);
+        }, 4000);
     }
 
     // NAVIGATION AUTO-HIGHLIGHT

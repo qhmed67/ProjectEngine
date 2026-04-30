@@ -72,13 +72,19 @@ try {
 
     if ($stmtUser === false) {
         $sqlErrors = sqlsrv_errors();
-        $detail = ($sqlErrors && isset($sqlErrors[0]['message'])) ? $sqlErrors[0]['message'] : 'Unknown SQL error';
+        $detail = ($sqlErrors && isset($sqlErrors[0]['message'])) ? $sqlErrors[0]['message'] : 'Unknown database error';
+        
+        // Log for developer debugging
         error_log("Registration SQL Error (Users): " . $detail);
-        // Check for duplicate email
+        
+        // Check specifically for duplicate email violation
         if (stripos($detail, 'duplicate') !== false || stripos($detail, 'unique') !== false || stripos($detail, 'UNIQUE KEY') !== false) {
-            throw new Exception("This email is already registered. Please sign in instead.");
+            http_response_code(409); // Conflict
+            echo json_encode(["success" => false, "error" => "Email address '$email' is already registered. Please use another email or sign in."]);
+            sqlsrv_rollback($conn);
+            exit;
         }
-        throw new Exception("Failed to create account. Please try again.");
+        throw new Exception("Unable to create user account. Detail: " . $detail);
     }
     
     // Fetch the generated ID directly from the INSERT statement
