@@ -91,27 +91,27 @@ flowchart TB
 
 ### Data Flow Diagrams (DFD)
 
-Data Flow Diagrams illustrate how information routes through the system's processes and databases. This is vital for understanding system boundaries and data persistence.
+Data Flow Diagrams illustrate how information routes through the system's processes and databases. To provide a complete architectural overview, we present the Level 0 logic from two standard academic perspectives:
 
-#### 1. Context Diagram
-The Context Diagram treats the entire platform as a single process, establishing the system boundary and identifying external entities.
+#### 1. Level 0: The System Context (Perspective A)
+This perspective treats the entire platform as a single process (1.0), establishing the system boundary and identifying interactions with external entities (Client, Developer) and the Central Database.
 
 <p align="center">
-  <img src="Diagrams/Context%20Diagram.png" alt="Context Diagram">
+  <img src="Diagrams/DFD00.jpg" alt="Level 0 Context Diagram" width="800">
 </p>
 
-#### 2. DFD Level 0
-Level 0 breaks down Process 0.0 into its primary functional subsystems. To keep this level clean, all data is routed to a single central database store.
+#### 2. Level 0: Functional Partitioning (Perspective B)
+This perspective decomposes the system into its primary functional modules—**Identity**, **Projects**, and **Workspace**. It reveals the high-level data routing between these internal subsystems and the central data store.
 
 <p align="center">
-  <img src="Diagrams/DFD%20LEVEL0.jpg" alt="DFD Level 0">
+  <img src="Diagrams/DFD%20LEVEL0.jpg" alt="DFD Level 0 - Partitioned" width="800">
 </p>
 
-#### 3. DFD Level 1
-Level 1 takes a single Level 0 process and decomposes it to a highly complex, granular level, exposing exact database tables and state changes.
+#### 3. DFD Level 1: Granular Deconstruction
+Level 1 takes the functional processes from Perspective B and breaks them down into specific table-level operations, exposing exact database interactions and state changes.
 
 <p align="center">
-  <img src="Diagrams/DFD%20LVL%201.jpg" alt="DFD Level 1">
+  <img src="Diagrams/DFD%20LVL%201.jpg" alt="DFD Level 1" width="800">
 </p>
 
 ---
