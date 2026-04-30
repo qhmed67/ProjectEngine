@@ -99,11 +99,11 @@ The Context Diagram treats the entire platform as a single process, establishing
 ```mermaid
 flowchart LR
     Client[Client]
-    Dev[Developer]
     Sys((0.0 ProjectEngine Platform))
+    Dev[Developer]
 
     Client -. "+Project Details\n+Hire Requests\n-Developer Profiles\n-Dashboard Stats" .-> Sys
-    Dev -. "+Profile Data\n+Applications\n-Job Listings\n-Workspace Status" .-> Sys
+    Sys -. "+Profile Data\n+Applications\n-Job Listings\n-Workspace Status" .-> Dev
 ```
 
 #### 2. DFD Level 0
