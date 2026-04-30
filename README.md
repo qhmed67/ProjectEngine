@@ -91,76 +91,28 @@ flowchart TB
 
 ### Data Flow Diagrams (DFD)
 
-Data Flow Diagrams illustrate how information routes through the system's processes and databases.
+Data Flow Diagrams illustrate how information routes through the system's processes and databases. This is vital for understanding system boundaries and data persistence.
 
 #### 1. Context Diagram
 The Context Diagram treats the entire platform as a single process, establishing the system boundary and identifying external entities.
 
-```mermaid
-flowchart LR
-    Client[Client]
-    Sys((0.0 ProjectEngine Platform))
-    Dev[Developer]
-
-    Client -. "+Project Details\n+Hire Requests\n-Developer Profiles\n-Dashboard Stats" .-> Sys
-    Sys -. "+Profile Data\n+Applications\n-Job Listings\n-Workspace Status" .-> Dev
-```
+<p align="center">
+  <img src="Diagrams/Context%20Diagram.png" alt="Context Diagram">
+</p>
 
 #### 2. DFD Level 0
-Level 0 breaks down Process 0.0 into its primary functional subsystems and introduces the main data stores.
+Level 0 breaks down Process 0.0 into its primary functional subsystems. To keep this level clean, all data is routed to a single central database store.
 
-```mermaid
-flowchart TB
-    C[Client]
-    D[Developer]
+<p align="center">
+  <img src="Diagrams/DFD%20LEVEL0.jpg" alt="DFD Level 0">
+</p>
 
-    P1[[1.0 Manage Identity]]
-    P2[[2.0 Manage Projects]]
-    P3[[3.0 Manage Workspace]]
+#### 3. DFD Level 1
+Level 1 takes a single Level 0 process and decomposes it to a highly complex, granular level, exposing exact database tables and state changes.
 
-    D1[(D1: Users & Profiles)]
-    D2[(D2: Projects & Apps)]
-    D3[(D3: Tasks & Chat)]
-
-    C -- "Auth / Profile Updates" --> P1
-    C -- "Post Project / Hire" --> P2
-    C -- "Read Tasks / Chat" --> P3
-
-    D -- "Auth / Skill Updates" --> P1
-    D -- "Apply to Project" --> P2
-    D -- "Move Tasks / Chat" --> P3
-
-    P1 <--> D1
-    P2 <--> D2
-    P3 <--> D3
-```
-
-#### 3. DFD Level 1 (Decomposition of 2.0 Manage Projects)
-Level 1 takes a single Level 0 process (Process 2.0) and decomposes it further to show exactly how data flows at a granular level.
-
-```mermaid
-flowchart TB
-    C[Client]
-    D[Developer]
-
-    P21[[2.1 Post New Project]]
-    P22[[2.2 Submit Application]]
-    P23[[2.3 Review Application]]
-
-    D2A[(D2a: Projects Table)]
-    D2B[(D2b: Applications Table)]
-
-    C -- "Project Form Data" --> P21
-    P21 -- "Insert New Project" --> D2A
-
-    D -- "Application Request" --> P22
-    P22 -- "Insert Application" --> D2B
-    D2A -. "Verify Project Exists" .-> P22
-
-    C -- "Accept / Reject Action" --> P23
-    P23 -- "Update App Status" --> D2B
-    P23 -- "Update Project to Active" --> D2A
-```
+<p align="center">
+  <img src="Diagrams/DFD%20LVL%201.jpg" alt="DFD Level 1">
+</p>
 
 ---
 
