@@ -91,28 +91,22 @@ flowchart TB
 
 ### Data Flow Diagrams (DFD)
 
-Data Flow Diagrams illustrate how information routes through the system's processes and databases. To provide a complete architectural overview, we present the Level 0 logic from two standard academic perspectives:
+Data Flow Diagrams illustrate how information routes through the system's processes and databases.
 
-#### 1. Level 0: The System Context (Perspective A)
-This perspective treats the entire platform as a single process (1.0), establishing the system boundary and identifying interactions with external entities (Client, Developer) and the Central Database.
+#### 1. Level 0: System Context Diagram
+This diagram establishes the system boundary, identifying interactions between the ProjectEngine platform and external entities (Clients and Developers) and the central database.
 
 <p align="center">
   <img src="Diagrams/realDFD0.jpg" alt="Level 0 Context Diagram" width="800">
 </p>
 
-#### 2. Level 0: Functional Partitioning (Perspective B)
-This perspective decomposes the system into its primary functional modules—**Identity**, **Projects**, and **Workspace**. It reveals the high-level data routing between these internal subsystems and the central data store.
-
-<p align="center">
-  <img src="Diagrams/DFD%20LEVEL0.jpg" alt="DFD Level 0 - Partitioned" width="800">
-</p>
-
-#### 3. DFD Level 1: Granular Deconstruction
-Level 1 takes the functional processes from Perspective B and breaks them down into specific table-level operations, exposing exact database interactions and state changes.
+#### 2. Level 1: Granular Deconstruction
+Level 1 decomposes the system's primary processes into specific table-level operations, exposing exact database interactions and state changes across the identity, project, and workspace modules.
 
 <p align="center">
   <img src="Diagrams/DFD%20LVL%201.jpg" alt="DFD Level 1" width="800">
 </p>
+
 
 ---
 
