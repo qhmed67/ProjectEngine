@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Try to set initials if logged in
         const name = localStorage.getItem('currentUser');
         if (name && avatar.textContent.length <= 2) {
-            avatar.textContent = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+            avatar.textContent = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         }
     });
 
@@ -70,13 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const msgDiv = document.createElement('div');
                 msgDiv.className = 'message msg-sent';
                 msgDiv.textContent = text;
-                
+
                 // Append it to the chat container
                 chatMessagesContainer.appendChild(msgDiv);
-                
+
                 // Clear the input
                 chatInputField.value = '';
-                
+
                 // Scroll strictly to the new message at the bottom
                 chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
             }
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Send via button click
         chatSendBtn.addEventListener('click', sendMessage);
-        
+
         // Send via Enter key press
         chatInputField.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -94,8 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // FORM HANDLING LOGIC → Real API Integration
+    // IMPORTANT: This handler ONLY manages Registration and Post-Project forms.
+    // All other forms (login, settings, delete) have their own dedicated handlers below.
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
+        const isRegistration = form.closest('.register-container');
+        const isPostProject = window.location.href.includes('post-project');
+
+        // Skip forms that have their own dedicated handlers
+        if (!isRegistration && !isPostProject) return;
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -108,9 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.style.opacity = '0.7';
             submitBtn.style.pointerEvents = 'none';
 
-            const isRegistration = form.closest('.register-container');
-            const isPostProject = window.location.href.includes('post-project');
-
             let apiUrl = '';
             const formData = new FormData(form);
 
@@ -120,45 +125,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 apiUrl = 'api/post_project.php';
             }
 
-            if (apiUrl) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await response.json();
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
 
-                    if (data.success) {
-                        if (isRegistration) {
-                            const name = formData.get('full_name') || formData.get('company_name') || '';
-                            localStorage.setItem('currentUser', name);
-                            localStorage.setItem('isLoggedIn', 'true');
-                            localStorage.setItem('userRole', formData.get('role'));
-                        }
-                        showNotification(data.message || 'Success!');
-                        setTimeout(() => {
-                            window.location.href = data.redirect || 'dashboard.html';
-                        }, 1000);
-                    } else {
-                        const errorMsg = data.errors ? data.errors.join(' • ') : (data.detail || data.error || 'Something went wrong.');
-                        showNotification('⚠ ' + errorMsg);
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.style.opacity = '1';
-                        submitBtn.style.pointerEvents = 'auto';
+                if (data.success) {
+                    if (isRegistration) {
+                        const name = formData.get('full_name') || formData.get('company_name') || '';
+                        localStorage.setItem('currentUser', name);
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('userRole', formData.get('role'));
                     }
-                } catch (err) {
-                    showNotification('⚠ ' + err.message);
+                    showNotification(data.message || 'Success!');
+                    setTimeout(() => {
+                        window.location.href = data.redirect || 'dashboard.html';
+                    }, 1000);
+                } else {
+                    const errorMsg = data.errors ? data.errors.join(' • ') : (data.detail || data.error || 'Something went wrong.');
+                    showNotification('⚠ ' + errorMsg);
                     submitBtn.innerHTML = originalText;
                     submitBtn.style.opacity = '1';
                     submitBtn.style.pointerEvents = 'auto';
                 }
-            } else {
-                setTimeout(() => {
-                    showNotification('Success!');
-                    setTimeout(() => {
-                        window.location.href = form.getAttribute('action') || 'dashboard.html';
-                    }, 1000);
-                }, 1200);
+            } catch (err) {
+                showNotification('⚠ ' + err.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.pointerEvents = 'auto';
             }
         });
     });
@@ -185,29 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // AUTH FORM HANDLERS
-    const registerForm = document.querySelector('form[action="dashboard.html"]');
-    if (registerForm && window.location.pathname.includes('register.html')) {
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('api/register.php', { method: 'POST', body: formData })
-                .then(r => r.json())
-                .then(res => {
-                    if (res.success) {
-                        localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('userRole', formData.get('role'));
-                        localStorage.setItem('currentUser', formData.get('full_name'));
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        showNotification(res.error || 'Registration failed');
-                    }
-                }).catch(() => showNotification('Connection error'));
-        });
-    }
+    // NOTE: Registration is handled by the generic form handler above (line ~97).
+    // Do NOT add a duplicate handler here — it causes double API calls
+    // and UNIQUE constraint violations on the email column.
 
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(this);
             fetch('api/login.php', { method: 'POST', body: formData })
@@ -259,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // NAVIGATION AUTO-HIGHLIGHT
     const navItems = document.querySelectorAll('.nav-item');
     const path = window.location.pathname.split("/").pop();
-    
+
     if (path) {
         navItems.forEach(item => {
             if (item.getAttribute('href') === path) {
@@ -290,16 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sync Nav & Sidebar Avatars
         const avatars = document.querySelectorAll('.dev-avatar');
         avatars.forEach(avatar => {
-             // Avoid overwriting tiny developer list avatars if they exist separately
-             if (avatar.style.width === '40px' || avatar.style.width === '80px') {
-                 avatar.textContent = initials;
-             }
+            // Avoid overwriting tiny developer list avatars if they exist separately
+            if (avatar.style.width === '40px' || avatar.style.width === '80px') {
+                avatar.textContent = initials;
+            }
         });
 
         // REPLACE 'SIGN IN' WITH USER AVATAR IN NAVBAR
         const navActions = document.querySelector('.nav-actions');
         const signInBtn = navActions ? navActions.querySelector('a[href="register.html"]') : null;
-        
+
         if (navActions && signInBtn) {
             // Create the avatar element
             const userAvatar = document.createElement('div');
@@ -320,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 font-weight: 800;
             `;
             userAvatar.title = 'Click to Logout';
-            
+
             // Replace the button
             navActions.replaceChild(userAvatar, signInBtn);
 
@@ -359,10 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navAvatarBtn && !isLoggedIn) {
         navAvatarBtn.title = 'Click to Logout';
         navAvatarBtn.addEventListener('click', () => {
-             if (confirm('Do you want to logout?')) {
-                 localStorage.clear();
-                 window.location.href = 'index.html';
-             }
+            if (confirm('Do you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
         });
     }
 
@@ -379,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.success) {
                         const prof = data.profile;
                         document.getElementById('set-email').value = prof.email;
-                        
+
                         if (prof.role === 'Client') {
                             document.getElementById('settings-client-fields').style.display = 'block';
                             document.getElementById('set-company').value = prof.company_name || '';
@@ -410,8 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(res => {
                         if (res.success) {
                             showNotification('Profile updated successfully!');
-                            if (fd.get('full_name')) {
-                                localStorage.setItem('currentUser', fd.get('full_name'));
+                            // Sync updated name to localStorage for sidebar/avatar
+                            const updatedName = fd.get('full_name') || fd.get('company_name');
+                            if (updatedName) {
+                                localStorage.setItem('currentUser', updatedName);
                             }
                         } else {
                             showNotification('⚠ Error: ' + (res.error || 'Update failed'));
@@ -450,14 +432,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                
+
                 // Update Button Active State
                 sidebarButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 // Hide All Tabs
                 dashboardTabs.forEach(tab => tab.style.display = 'none');
-                
+
                 // Show Target Tab
                 const targetId = btn.getAttribute('data-tab');
                 const targetTab = document.getElementById(targetId);
@@ -475,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(data => {
                 projectListContainer.innerHTML = ''; // clear loading state
-                
+
                 if (data.success && data.projects && data.projects.length > 0) {
                     data.projects.forEach(proj => {
                         let statusClass = 'status-pending';
@@ -546,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (path === 'workspace.html') {
         const urlParams = new URLSearchParams(window.location.search);
         let projectId = urlParams.get('id');
-        
+
         if (!projectId) {
             // If no project ID is provided, try to find the user's first available project and redirect
             fetch('api/get_projects.php')
@@ -556,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Find the first "Active" or "Accepted" project
                         let firstActive = data.projects.find(p => p.status === 'Active' || p.app_status === 'Accepted');
                         if (!firstActive) firstActive = data.projects[0]; // fallback to first one
-                        
+
                         window.location.href = `workspace.html?id=${firstActive.id}`;
                     } else {
                         document.querySelector('.main-content').innerHTML = `
@@ -578,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.success) {
                         const proj = data.project;
                         const tasks = data.tasks || [];
-                        
+
                         // Workspace Status Handling for Clients
                         if (localStorage.getItem('userRole') === 'Client' && data.app_status && data.app_status !== 'Accepted') {
                             const mainContent = document.querySelector('.main-content');
@@ -609,25 +591,25 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                             return; // Stop execution, don't load the kanban board
                         }
-                        
+
                         console.log("Loading Workspace Data for project:", proj.title);
                         const titleEl = document.getElementById('ws-project-title-unique');
                         if (titleEl) titleEl.textContent = proj.title;
                         else console.error("Element ws-project-title-unique not found!");
                         document.getElementById('ws-project-level').textContent = proj.required_level + ' Track';
-                        
+
                         let partnerName = proj.partner_name || 'Pending Developer Assignment';
                         let partnerText = proj.status === 'Pending' ? 'Real-time collaboration workspace.' : `Real-time collaboration workspace. Partnered with ${partnerName}.`;
                         document.getElementById('ws-partner-text').textContent = partnerText;
-                        
+
                         // Update Chat Header
                         document.getElementById('ws-chat-name').textContent = partnerName;
                         if (partnerName !== 'Pending Developer Assignment') {
-                            document.getElementById('chat-avatar').textContent = partnerName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+                            document.getElementById('chat-avatar').textContent = partnerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                         } else {
                             document.getElementById('chat-avatar').textContent = '?';
                         }
-                        
+
                         // Render Tasks
                         const cols = {
                             'To Do': document.getElementById('tasks-todo'),
@@ -635,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             'Done': document.getElementById('tasks-done')
                         };
                         const counts = { 'To Do': 0, 'In Progress': 0, 'Done': 0 };
-                        
+
                         // Only developers can add tasks
                         console.log("User Role:", localStorage.getItem('userRole'));
                         if (localStorage.getItem('userRole') === 'Developer') {
@@ -644,14 +626,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Clear columns before rendering
                         Object.values(cols).forEach(c => c.innerHTML = '');
-                        
+
                         tasks.forEach(task => {
                             if (!cols[task.status]) return;
                             counts[task.status]++;
-                            
+
                             const card = document.createElement('div');
                             card.className = 'task-card';
-                            
+
                             let moveBtns = '';
                             let deleteBtn = '';
                             const isDeveloper = localStorage.getItem('userRole') === 'Developer';
@@ -673,10 +655,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                     moveBtns = `<button class="btn btn-outline btn-sm" onclick="moveTask(${task.task_id}, 'In Progress')" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-top: 0.5rem;">&larr; Reopen</button>`;
                                 }
                             }
-                            
+
                             let titleHtml = task.status === 'Done' ? `<h4 style="text-decoration: line-through; margin-bottom:0.5rem;">${task.title}</h4>` : `<h4 style="margin-bottom:0.5rem;">${task.title}</h4>`;
                             let descHtml = task.description ? `<p class="text-secondary" style="font-size:0.9rem; margin-bottom: 0;">${task.description}</p>` : '';
-                            
+
                             card.innerHTML = `
                                 ${deleteBtn}
                                 ${titleHtml}
@@ -685,29 +667,29 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                             cols[task.status].appendChild(card);
                         });
-                        
+
                         document.getElementById('count-todo').textContent = counts['To Do'];
                         document.getElementById('count-inprogress').textContent = counts['In Progress'];
                         document.getElementById('count-done').textContent = counts['Done'];
-                        
+
                         // Calculate Sprint Percentage
                         const totalTasks = tasks.length;
                         const doneTasks = counts['Done'];
                         const inProgressTasks = counts['In Progress'];
-                        
+
                         let percentage = 0;
                         if (totalTasks > 0) {
                             percentage = Math.round(((doneTasks + (inProgressTasks * 0.5)) / totalTasks) * 100);
-}
-                        
+                        }
+
                         document.getElementById('ws-progress-text').textContent = percentage + '%';
                         document.getElementById('ws-progress-bar').style.width = percentage + '%';
-                        
+
                         // Workspace Chat Logic
                         const chatInput = document.getElementById('ws-chat-input');
                         const chatSendBtn = document.getElementById('ws-chat-send');
                         const chatContainer = document.getElementById('chat-messages-container');
-                        
+
                         function loadMessages() {
                             fetch(`api/get_messages.php?id=${projectId}`)
                                 .then(r => r.json())
@@ -720,13 +702,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                             chatData.messages.forEach(msg => {
                                                 const div = document.createElement('div');
                                                 div.className = msg.is_mine ? 'message msg-sent' : 'message msg-received';
-                                                
+
                                                 const nameHtml = msg.is_mine ? '' : `<div style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--primary);">${msg.sender_name}</div>`;
-                                                
+
                                                 // Handle date conversion if it's already a string from CONVERT
                                                 let dateObj = msg.sent_at.date ? new Date(msg.sent_at.date) : new Date(msg.sent_at);
                                                 const time = isNaN(dateObj.getTime()) ? 'Recently' : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                                                
+
                                                 div.innerHTML = `
                                                     ${nameHtml}
                                                     <div class="msg-body" style="padding: 0.8rem 1.2rem; border-radius: 20px; max-width: 100%; word-wrap: break-word; background: ${msg.is_mine ? 'var(--primary)' : 'rgba(0,0,0,0.05)'}; color: ${msg.is_mine ? 'white' : 'var(--text-primary)'};">
@@ -734,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                                     </div>
                                                     <div style="font-size: 0.65rem; color: var(--text-secondary); margin-top: 0.2rem; text-align: ${msg.is_mine ? 'right' : 'left'};">${time}</div>
                                                 `;
-                                                
+
                                                 div.style.marginBottom = '1rem';
                                                 div.style.display = 'flex';
                                                 div.style.flexDirection = 'column';
@@ -749,19 +731,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                 });
                         }
-                        
+
                         loadMessages();
                         setInterval(loadMessages, 5000); // Poll for new messages every 5 seconds
-                        
+
                         function sendMessage() {
                             const text = chatInput.value.trim();
                             if (!text) return;
-                            
+
                             console.log("Sending message to PID:", projectId, "Text:", text);
                             const fd = new FormData();
                             fd.append('project_id', projectId);
                             fd.append('message', text);
-                            
+
                             fetch('api/send_message.php', { method: 'POST', body: fd })
                                 .then(r => r.json())
                                 .then(sendData => {
@@ -774,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                 });
                         }
-                        
+
                         if (chatSendBtn) chatSendBtn.addEventListener('click', sendMessage);
                         if (chatInput) {
                             chatInput.addEventListener('keypress', (e) => {
@@ -807,26 +789,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.success) {
                         const dev = data.developer;
                         document.getElementById('prof-name').textContent = dev.full_name;
-                        document.getElementById('prof-avatar').textContent = dev.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-                        
+                        document.getElementById('prof-avatar').textContent = dev.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
                         let badgeClass = 'badge-junior';
                         if (dev.level === 'Mid') badgeClass = 'badge-mid';
                         if (dev.level === 'Senior') badgeClass = 'badge-senior';
                         if (dev.level === 'Trainee') badgeClass = 'badge-trainee';
-                        
+
                         const profLevel = document.getElementById('prof-level');
                         profLevel.className = `level-badge ${badgeClass}`;
                         profLevel.textContent = `${dev.level} Developer`;
-                        
+
                         document.getElementById('prof-title').textContent = dev.job_title || 'Software Engineer';
                         document.getElementById('prof-desc').textContent = `Professional developer charging $${dev.hourly_rate}/hr. Contact: ${dev.email}`;
-                        
+
                         const linksContainer = document.getElementById('prof-links');
                         linksContainer.innerHTML = '';
                         if (dev.portfolio_url) linksContainer.innerHTML += `<a href="${dev.portfolio_url}" target="_blank" class="btn btn-outline btn-sm">Portfolio</a>`;
                         if (dev.github_url) linksContainer.innerHTML += `<a href="${dev.github_url}" target="_blank" class="btn btn-outline btn-sm">GitHub</a>`;
                         if (dev.linkedin_url) linksContainer.innerHTML += `<a href="${dev.linkedin_url}" target="_blank" class="btn btn-outline btn-sm">LinkedIn</a>`;
-                        
+
                         const skillsContainer = document.getElementById('prof-skills');
                         skillsContainer.innerHTML = '';
                         if (dev.skills && dev.skills.length > 0) {
@@ -840,17 +822,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Dynamic Profile Sections
                         document.getElementById('dyn-about-title').textContent = `About ${dev.full_name.split(' ')[0]}`;
                         const bioEl = document.getElementById('dyn-bio');
-                        
+
                         const defaultBio = `${dev.full_name} is a dedicated ${dev.level} ${dev.job_title || 'Developer'} focused on delivering high-quality web solutions.`;
                         bioEl.textContent = dev.bio || defaultBio;
 
                         // Experience Widget Logic
                         const expYearsEl = document.getElementById('dyn-exp-years');
                         const expDescEl = document.getElementById('dyn-exp-desc');
-                        
+
                         let years = "0-1";
                         let desc = `${dev.full_name} is currently starting their professional journey, building a strong foundation in modern technologies.`;
-                        
+
                         if (dev.level === 'Junior') {
                             years = "1-3";
                             desc = `${dev.full_name} has established core professional experience and has contributed to multiple production-level projects.`;
@@ -861,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             years = "5+";
                             desc = `${dev.full_name} is a veteran engineer with extensive experience leading teams and delivering complex, enterprise-grade solutions.`;
                         }
-                        
+
                         expYearsEl.textContent = `${years} Years`;
                         expDescEl.textContent = desc;
 
@@ -870,7 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             try {
                                 const parts = dev.github_url.replace(/\/$/, '').split('/');
                                 const ghUser = parts.pop();
-                                
+
                                 if (ghUser) {
                                     bioEl.textContent = "Syncing with GitHub...";
                                     fetch(`https://api.github.com/users/${ghUser}`)
@@ -886,32 +868,32 @@ document.addEventListener('DOMContentLoaded', () => {
                                             bioEl.textContent = defaultBio;
                                         });
                                 }
-                            } catch (e) { 
+                            } catch (e) {
                                 bioEl.textContent = defaultBio;
                             }
                         }
-                        
+
                         // Hire Action
                         if (data.client_projects && data.client_projects.length > 0) {
                             const actionContainer = document.getElementById('hire-action-container');
                             actionContainer.style.display = 'block';
-                            
+
                             const select = document.getElementById('hire-project-select');
                             data.client_projects.forEach(p => {
                                 select.innerHTML += `<option value="${p.project_id}">${p.title}</option>`;
                             });
-                            
+
                             document.getElementById('btn-hire').addEventListener('click', () => {
                                 const projId = select.value;
                                 if (!projId) {
                                     alert("Please select a project first.");
                                     return;
                                 }
-                                
+
                                 const formData = new FormData();
                                 formData.append('dev_id', devId);
                                 formData.append('project_id', projId);
-                                
+
                                 fetch('api/hire_developer.php', { method: 'POST', body: formData })
                                     .then(r => r.json())
                                     .then(res => {
@@ -948,18 +930,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (dev.level === 'Mid') { badgeClass = 'badge-mid'; devClass = 'mid'; }
                         if (dev.level === 'Senior') { badgeClass = 'badge-senior'; devClass = 'senior'; }
                         if (dev.level === 'Trainee') { badgeClass = 'badge-trainee'; devClass = 'trainee'; }
-                        
+
                         let skillsHtml = '';
                         if (dev.skills && dev.skills.length > 0) {
                             dev.skills.slice(0, 3).forEach(s => {
                                 skillsHtml += `<span class="skill-tag">${s}</span>`;
                             });
                         }
-                        
+
                         grid.innerHTML += `
                             <div class="card dev-card ${devClass}">
                                 <div class="dev-header">
-                                    <div class="dev-avatar">${dev.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+                                    <div class="dev-avatar">${dev.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}</div>
                                     <div class="dev-info">
                                         <h3>${dev.full_name}</h3>
                                         <span class="level-badge ${badgeClass}">${dev.level} Level</span>
@@ -979,13 +961,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Global functions for developer accepting/denying hire requests
-window.respondHire = function(projectId, status) {
+window.respondHire = function (projectId, status) {
     if (!confirm(`Are you sure you want to ${status === 'Accepted' ? 'ACCEPT' : 'DENY'} this hire request?`)) return;
-    
+
     const formData = new FormData();
     formData.append('project_id', projectId);
     formData.append('status', status);
-    
+
     fetch('api/respond_hire.php', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(res => {
@@ -997,47 +979,47 @@ window.respondHire = function(projectId, status) {
         });
 };
 
-    window.moveTask = function(id, status) {
-        if (localStorage.getItem('userRole') !== 'Developer') return;
-        const formData = new FormData();
-        formData.set('task_id', id);
-        formData.set('status', status);
+window.moveTask = function (id, status) {
+    if (localStorage.getItem('userRole') !== 'Developer') return;
+    const formData = new FormData();
+    formData.set('task_id', id);
+    formData.set('status', status);
 
-        fetch(`api/move_task.php`, { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) location.reload();
-                else showNotification(data.error || 'Failed to move task');
-            });
-    };
+    fetch(`api/move_task.php`, { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) location.reload();
+            else showNotification(data.error || 'Failed to move task');
+        });
+};
 
-    window.deleteTask = function(id) {
-        if (localStorage.getItem('userRole') !== 'Developer') return;
-        if (!confirm("Are you sure you want to delete this task?")) return;
-        
-        const formData = new FormData();
-        formData.set('id', id);
+window.deleteTask = function (id) {
+    if (localStorage.getItem('userRole') !== 'Developer') return;
+    if (!confirm("Are you sure you want to delete this task?")) return;
 
-        fetch(`api/delete_task.php`, { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) location.reload();
-                else showNotification(data.error || 'Failed to delete task');
-            });
-    };
+    const formData = new FormData();
+    formData.set('id', id);
 
-window.addTask = function() {
+    fetch(`api/delete_task.php`, { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) location.reload();
+            else showNotification(data.error || 'Failed to delete task');
+        });
+};
+
+window.addTask = function () {
     if (localStorage.getItem('userRole') !== 'Developer') return;
     const title = prompt("Enter new task title:");
     if (!title || !title.trim()) return;
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get('id');
-    
+
     const formData = new FormData();
     formData.append('project_id', projectId);
     formData.append('title', title.trim());
-    
+
     fetch('api/add_task.php', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(res => {

@@ -71,7 +71,14 @@ try {
     $stmtUser   = sqlsrv_query($conn, $sqlUser, $paramsUser);
 
     if ($stmtUser === false) {
-        throw new Exception("Failed to create user record.");
+        $sqlErrors = sqlsrv_errors();
+        $detail = ($sqlErrors && isset($sqlErrors[0]['message'])) ? $sqlErrors[0]['message'] : 'Unknown SQL error';
+        error_log("Registration SQL Error (Users): " . $detail);
+        // Check for duplicate email
+        if (stripos($detail, 'duplicate') !== false || stripos($detail, 'unique') !== false || stripos($detail, 'UNIQUE KEY') !== false) {
+            throw new Exception("This email is already registered. Please sign in instead.");
+        }
+        throw new Exception("Failed to create account. Please try again.");
     }
     
     // Fetch the generated ID directly from the INSERT statement
@@ -87,29 +94,52 @@ try {
     if ($role === 'Client') {
         $sqlClient = "INSERT INTO dbo.Clients (client_id, company_name, contact_number)
                       VALUES (?, ?, ?);";
-        $contactNumber = trim($_POST['contact_number'] ?? null);
+        $contactNumber = isset($_POST['contact_number']) ? trim($_POST['contact_number']) : null;
         $paramsClient  = [$userId, $companyName, $contactNumber];
         $stmtClient    = sqlsrv_query($conn, $sqlClient, $paramsClient);
 
         if ($stmtClient === false) {
-            throw new Exception("Failed to create client profile.");
+            $sqlErrors = sqlsrv_errors();
+            $detail = ($sqlErrors && isset($sqlErrors[0]['message'])) ? $sqlErrors[0]['message'] : 'Unknown SQL error';
+            error_log("Registration SQL Error (Clients): " . $detail);
+            throw new Exception("Failed to create client profile. Please try again.");
         }
         sqlsrv_free_stmt($stmtClient);
 
     } elseif ($role === 'Developer') {
-        $sqlDev = "INSERT INTO dbo.Developers (dev_id, full_name, level, hourly_rate, portfolio_url, job_title, github_url, linkedin_url, bio, is_booked)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0);";
         $hourlyRate   = floatval($_POST['hourly_rate']   ?? 0);
         $portfolioUrl = trim($_POST['portfolio_url']     ?? '');
         $jobTitle     = trim($_POST['job_title']         ?? '');
         $githubUrl    = trim($_POST['github_url']        ?? '');
         $linkedinUrl  = trim($_POST['linkedin_url']      ?? '');
         $bio          = trim($_POST['bio']               ?? '');
-        $paramsDev    = [$userId, $fullName, $level, $hourlyRate, $portfolioUrl ?: null, $jobTitle ?: null, $githubUrl ?: null, $linkedinUrl ?: null, $bio ?: null];
-        $stmtDev      = sqlsrv_query($conn, $sqlDev, $paramsDev);
+
+        // Try INSERT with bio column first; fall back without it if the column doesn't exist
+        $sqlDev = "INSERT INTO dbo.Developers (dev_id, full_name, level, hourly_rate, portfolio_url, job_title, github_url, linkedin_url, bio, is_booked)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0);";
+        $paramsDev = [$userId, $fullName, $level, $hourlyRate, $portfolioUrl ?: null, $jobTitle ?: null, $githubUrl ?: null, $linkedinUrl ?: null, $bio ?: null];
+        $stmtDev = sqlsrv_query($conn, $sqlDev, $paramsDev);
 
         if ($stmtDev === false) {
-            throw new Exception("Failed to create developer profile.");
+            // Check if the error is specifically about the 'bio' column not existing
+            $sqlErrors = sqlsrv_errors();
+            $errMsg = ($sqlErrors && isset($sqlErrors[0]['message'])) ? $sqlErrors[0]['message'] : '';
+
+            if (stripos($errMsg, 'bio') !== false || stripos($errMsg, 'Invalid column') !== false) {
+                // Retry without bio column
+                $sqlDev2 = "INSERT INTO dbo.Developers (dev_id, full_name, level, hourly_rate, portfolio_url, job_title, github_url, linkedin_url, is_booked)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0);";
+                $paramsDev2 = [$userId, $fullName, $level, $hourlyRate, $portfolioUrl ?: null, $jobTitle ?: null, $githubUrl ?: null, $linkedinUrl ?: null];
+                $stmtDev = sqlsrv_query($conn, $sqlDev2, $paramsDev2);
+
+                if ($stmtDev === false) {
+                    $sqlErrors2 = sqlsrv_errors();
+                    $detail2 = ($sqlErrors2 && isset($sqlErrors2[0]['message'])) ? $sqlErrors2[0]['message'] : 'Unknown error';
+                    throw new Exception("Failed to create developer profile. Please contact support.");
+                }
+            } else {
+                throw new Exception("Failed to create developer profile. Please contact support.");
+            }
         }
         sqlsrv_free_stmt($stmtDev);
 
