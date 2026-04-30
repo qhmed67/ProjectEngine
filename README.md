@@ -97,7 +97,7 @@ Data Flow Diagrams illustrate how information routes through the system's proces
 This perspective treats the entire platform as a single process (1.0), establishing the system boundary and identifying interactions with external entities (Client, Developer) and the Central Database.
 
 <p align="center">
-  <img src="Diagrams/DFD00.jpg" alt="Level 0 Context Diagram" width="800">
+  <img src="Diagrams/realDFD0.jpg" alt="Level 0 Context Diagram" width="800">
 </p>
 
 #### 2. Level 0: Functional Partitioning (Perspective B)
