@@ -16,7 +16,7 @@ ProjectEngine bridges the gap between **Clients** who need software built and **
 
 ## Official Documentation PDFs
 
-| <a href="https://drive.google.com/file/d/1yGRA91eyGHGpXoG95AVKTy8WsNzXCgAT/view?usp=sharing" target="_blank"><img src="Documentation\ProjectEngine_Technical_Documentation.pdf" width="350" alt="Technical Documentation"></a> | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <a href="https://drive.google.com/file/d/1eXio_cuHRFpBjhJbxi54ySpPzI3S3wEL/view?usp=sharing" target="_blank"><img src="Documentation\ProjectEngine_Data_Dictionary.pdf" width="350" alt="Data Dictionary"></a> |
+| <a href="https://drive.google.com/file/d/1yGRA91eyGHGpXoG95AVKTy8WsNzXCgAT/view?usp=sharing" target="_blank"><img src="imgs/Documentation.png" width="350" alt="Technical Documentation"></a> | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <a href="https://drive.google.com/file/d/1eXio_cuHRFpBjhJbxi54ySpPzI3S3wEL/view?usp=sharing" target="_blank"><img src="imgs/Data Dictionary.png" width="350" alt="Data Dictionary"></a> |
 | :---: | :---: | :---: |
 | **[Technical Documentation](https://drive.google.com/file/d/1yGRA91eyGHGpXoG95AVKTy8WsNzXCgAT/view?usp=sharing)** | | **[Data Dictionary](https://drive.google.com/file/d/1eXio_cuHRFpBjhJbxi54ySpPzI3S3wEL/view?usp=sharing)** |
 
