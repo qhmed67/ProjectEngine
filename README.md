@@ -89,23 +89,29 @@ flowchart TB
     Auth & Proj & Work & Prof <-->|"sqlsrv_query()"| Tables
 ```
 
-### Data Flow Diagrams (DFD)
+### System Modeling & Data Flow
 
-Data Flow Diagrams illustrate how information routes through the system's processes and databases.
-
-#### 1. Level 0: System Context Diagram
-This diagram establishes the system boundary, identifying interactions between the ProjectEngine platform and external entities (Clients and Developers) and the central database.
+#### 1. System Context Diagram
+The Context Diagram defines the highest-level view of the system, showing the ProjectEngine platform as a single central process and its data exchanges with external entities (Clients and Developers).
 
 <p align="center">
-  <img src="Diagrams/realDFD0.jpg" alt="Level 0 Context Diagram" width="800">
+  <img src="Diagrams/Context%20Diagram.jpg" alt="System Context Diagram" width="800">
 </p>
 
-#### 2. Level 1: Granular Deconstruction
-Level 1 decomposes the system's primary processes into specific table-level operations, exposing exact database interactions and state changes across the identity, project, and workspace modules.
+#### 2. DFD Level 0: Major Processes
+Level 0 decomposes the system into its primary functional modules (Identity, Projects, and Workspace). It illustrates how data routes between these high-level processes and the central data stores.
+
+<p align="center">
+  <img src="Diagrams/realDFD0.jpg" alt="DFD Level 0" width="800">
+</p>
+
+#### 3. DFD Level 1: Granular Deconstruction
+Level 1 provides a detailed breakdown of the Level 0 processes, exposing specific table-level operations, exact database interactions, and state changes.
 
 <p align="center">
   <img src="Diagrams/DFD%20LVL%201.jpg" alt="DFD Level 1" width="800">
 </p>
+
 
 
 ---
